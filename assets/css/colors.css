@@ -1,0 +1,41 @@
+/*!
+ * colors.css
+ * User-defined color extensions for Teletext.js
+ * ------------------------------------------------------------
+ * This file is an optional add-on allowing you to define your
+ * own custom colors, highlights, and special text effects.
+ *
+ * HOW IT WORKS:
+ * -------------
+ * Teletext.js automatically scans all loaded CSS stylesheets for
+ * classes that begin with "ttx-". Any text wrapped in matching
+ * Teletext-style tags (e.g., [gold] or [bg-pink]) will be converted
+ * into a <span> element with that class applied.
+ *
+ * For example:
+ *   [gold]Treasure[/gold]
+ *   [bg-pink]Love[/bg-pink]
+ *
+ * REQUIREMENTS:
+ * --------------
+ * • Class names must follow the "ttx-" naming convention:
+ *     .ttx-colorName       for text color
+ *     .ttx-bg-colorName    for background color
+ *
+ * • Make sure this file is loaded BEFORE teletext.js executes:
+ *     <link rel="stylesheet" href="assets/css/colors.css">
+ *
+ * • No changes to the JavaScript code are needed. Once defined,
+ *   your custom colors are automatically recognized by the parser.
+ *
+ * EXAMPLES:
+ * ----------
+ *   .ttx-gold     { color: #ffd700; }
+ *   .ttx-silver   { color: #c0c0c0; }
+ *   .ttx-bg-lime  { background-color: #99ff33; color: #000; }
+ *   .ttx-bg-brown { background-color: #5c3a21; color: #fff; }
+ *
+ * ------------------------------------------------------------
+ * Author: You
+ * Inspired by Teletext.js by Kasperi Koski
+ */

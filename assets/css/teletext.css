@@ -1,0 +1,632 @@
+/*!
+ * Teletext.css v3.0
+ * Author: Kasperi Koski
+ * License: MIT
+ *
+ * ============================================================
+ *  DESCRIPTION:
+ *  This stylesheet defines the base styling for Teletext.js.
+ *  All styles are scoped under the `.ttx-wrapper` container
+ *  to avoid global overrides.
+ *
+ *  The design emulates classic teletext visuals, using the
+ *  "European Teletext" pixel font and a monospace grid layout.
+ *
+ *  Sections:
+ *  1. Font & Global Rules
+ *  2. Structure (Screen, Content, Footer)
+ *  3. Header Bar (Page number, title, subpage)
+ * ============================================================
+ */
+
+
+/* ============================================================
+   1. FONT & GLOBAL RULES
+   ============================================================ */
+
+@font-face {
+  font-family: "European Teletext";
+  src: url("../fonts/EuropeanTeletext.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+}
+
+/* Teletext core typography — scoped to .ttx-wrapper only */
+.ttx-wrapper,
+#teletext {
+  position: relative;
+  width: 100%;
+  max-width: var(--ttx-max-width, 960px);
+  aspect-ratio: var(--ttx-aspect, 1.3333);
+  background: black;
+  overflow: hidden;
+  font-family: "European Teletext", monospace;
+  color: var(--ttx-base-text-color, #fff);
+  font-size: var(--ttx-base-size, 22px);
+  letter-spacing: 0.05em;
+}
+
+.ttx-wrapper * {
+  box-sizing: border-box;
+}
+
+/* ============================================================
+   DYNAMIC FONT SIZE VARIABLES
+   ============================================================ */
+
+.ttx-content {
+  font-size: var(--ttx-content-size, 1em);
+}
+
+/* Dynamic heading levels */
+h1, .ttx-h1 {
+  font-size: var(--ttx-h1-size, 1.9em);
+  color: var(--ttx-h1-color, yellow);
+}
+
+h2, .ttx-h2 {
+  font-size: var(--ttx-h2-size, 1.7em);
+  color: var(--ttx-h2-color, yellow);
+}
+
+h3, .ttx-h3 {
+  font-size: var(--ttx-h3-size, 1.6em);
+  color: var(--ttx-h3-color, yellow);
+}
+
+h4, .ttx-h4 {
+  font-size: var(--ttx-h4-size, 1.5em);
+  color: var(--ttx-h4-color, yellow);
+}
+
+h5, .ttx-h5 {
+  font-size: var(--ttx-h5-size, 1.4em);
+  color: var(--ttx-h5-color, yellow);
+}
+
+h6, .ttx-h6 {
+  font-size: var(--ttx-h6-size, 1.3em);
+  color: var(--ttx-h6-color, yellow);
+}
+
+/* Remove unwanted spacing between headings and text */
+.ttx-content h1,
+.ttx-content h2,
+.ttx-content h3,
+.ttx-content h4,
+.ttx-content h5,
+.ttx-content h6 {
+  display: inline-block;
+  white-space: pre;
+  line-height: inherit;
+  margin-top: 0.2em;
+  margin-bottom: 0.2em;
+  font-weight: normal !important;
+}
+
+/* ============================================================
+   2. STRUCTURE (Screen, Content, Footer)
+   ============================================================ */
+
+
+@keyframes ttx-tv-flicker {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.98; }
+  75% { opacity: 1.02; }
+}
+/* Scalable Teletext screen inside wrapper */
+.ttx-screen {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: var(--ttx-native-width, 800px);
+  height: var(--ttx-native-height, 600px);
+  transform-origin: top left;
+  transform: scale(var(--ttx-scale, 1));
+  background: radial-gradient(ellipse at top center, rgba(255, 255, 255, 0.17), rgba(0,0,0,0.95) 80%);
+  border-radius: var(--ttx-screen-radius, 0.5em);
+  box-shadow:
+    0 0 20px rgba(0,0,0,0.8),
+    inset 0 0 60px rgba(255,255,255,0.03),
+    inset 0 -10px 30px rgba(0,0,0,0.7);
+
+  animation: ttx-tv-flicker var(--ttx-flicker-speed, 4s) infinite ease-in-out;
+}
+
+.ttx-content {
+  flex: 1;
+  padding-left: var(--ttx-content-padding-left, 0.75em);
+  padding-right: var(--ttx-content-padding-right, 0.75em);
+  overflow: hidden;
+  line-height: var(--ttx-content-line-height, 1.2);
+  white-space: pre-wrap;
+}
+
+/* Default footer inside Teletext */
+.ttx-footer {
+  font-size: 0.9em;
+  text-align: center;
+  padding-top: 0.3em;
+  color: var(--ttx-base-text-color, #fff);
+}
+
+.ttx-footer.outside {
+  margin-top: 0.8em;
+  color: #0f0;
+  line-height: 1.3;
+}
+
+/* ============================================================
+   3. TELETYPE HEADER BAR (Page number, title, subpage number)
+   ============================================================ */
+
+/**
+ * The Teletext header bar displays the current page number,
+ * title, and subpage counter. It is fully customizable through
+ * CSS and configuration options defined in Teletext.config.
+ *
+ * Configurable via:
+ * - headerBackground (CSS class name, e.g. "bg-blue", "bg-transparent")
+ * - pageNumberSize, titleSize, subpageNumberSize (font sizes)
+ *
+ * Default layout:
+ * [PAGE NUMBER]    [TITLE]    [SUBPAGE COUNTER]
+ */
+
+.ttx-title {
+  display: flex;
+  justify-content: center;   /* Center horizontally */
+  align-items: center;       /* Center vertically */
+  text-align: center;        /* Center multiline text if any */
+}
+
+.ttx-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.4em 0.7em;
+  color: #0f0;
+  background: var(--ttx-header-bg, #0000ff) !important;
+  margin-top: var(--ttx-header-margin-top, 1em);
+  margin-bottom: var(--ttx-header-margin-bottom, 1em);
+  margin-left: var(--ttx-header-margin-left, 1em);
+  margin-right: var(--ttx-header-margin-right, 1em);
+}
+
+.ttx-header #page-title {
+  color: var(--ttx-title-color, #0ff);
+}
+
+/* === Individual Header Elements === */
+
+#page-number {
+  color: var(--ttx-page-number-color, #fff);
+  font-size: var(--ttx-page-number-size, 1em);
+  font-weight: var(--ttx-page-number-weight, normal);
+}
+
+/* ============================================================
+   HEADER TITLE — ALIGNMENT & MARGIN CONTROL
+   ============================================================
+
+   The title alignment and margins are dynamically adjustable
+   via Teletext.config and runtime CSS variables:
+
+   --ttx-title-align   → text alignment (left, center, right)
+   --ttx-title-ml      → left margin (e.g. 0em, 1em)
+   --ttx-title-mr      → right margin (e.g. 0em, 1em)
+
+   Example overrides (from JS):
+     header.style.setProperty("--ttx-title-align", "left");
+     header.style.setProperty("--ttx-title-ml", "1em");
+     header.style.setProperty("--ttx-title-mr", "0.5em");
+*/
+#page-title {
+  flex: 1;
+  text-align: var(--ttx-title-align, center);
+  margin-left: var(--ttx-title-ml, 0.5em);
+  margin-right: var(--ttx-title-mr, 0.5em);
+  color: #0ff;
+  font-size: var(--ttx-title-size, 1em);
+  font-weight: var(--ttx-title-weight, normal);
+}
+
+#subpage-number {
+  text-align: right;
+  color: var(--ttx-subpage-number-color, #fff);
+  font-size: var(--ttx-subpage-number-size, 1em);
+  font-weight: var(--ttx-subpage-number-weight, normal);
+}
+
+/* ============================================================
+   CLOCK MODULE STYLES
+   ============================================================ */
+.ttx-clock {
+  display: inline-block;
+  padding: 0 0.4em;
+  text-align: center;
+  font-family: "European Teletext", monospace;
+  color: var(--ttx-clock-color, #fff);
+  font-size: var(--ttx-clock-size, 0.9em);
+  font-weight: var(--ttx-clock-weight, normal);
+  line-height: 1.4;
+  margin-left: var(--ttx-clock-ml, 0.5em);
+  margin-right: var(--ttx-clock-mr, 0.5em);
+}
+
+/* ============================================================
+   BLOCK ELEMENTS — support Teletext colors properly
+   ============================================================ */
+
+.ttx-block {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  width: 100%;
+  padding: 0.3em 0.5em;
+  margin: 0.4em 0;
+  font-weight: normal;
+  text-align: left;
+  line-height: normal;
+  border-radius: 0.1em;
+  color: inherit;
+}
+
+/* --- Oletustausta vain niille, joilla ei ole omaa taustaväriä --- */
+.ttx-block:not([class*="ttx-bg-"]) {
+  background-color: var(--ttx-block-default-bg, rgb(0, 0, 255));
+}
+
+/* --- Varmista, ettei muut taustaominaisuudet häiritse --- */
+[class*="ttx-bg-"] {
+  background-blend-mode: normal;
+  background-image: none;
+}
+
+/* ============================================================
+   4. HEADER COLOR TRANSPARENCY
+   ============================================================ */
+
+.ttx-header.bg-transparent {
+  background: transparent !important;
+  border: none;
+}
+
+
+/* ============================================================
+   TELETEXT COLOR SYSTEM — BUILT-IN + USER-DEFINED SUPPORT
+   ============================================================
+
+   Color handling in Teletext.js is fully dynamic. Any text wrapped in
+   square brackets (e.g., [yellow]text[/yellow]) will be automatically
+   converted into a <span> element with the corresponding CSS class,
+   if a class matching `.ttx-yellow` exists in any loaded stylesheet.
+
+   ──────────────── Examples ────────────────
+   [red]Alert![/red]     → <span class="ttx-red">Alert!</span>
+   [bg-blue]Note[/bg-blue] → <span class="ttx-bg-blue">Note</span>
+
+   ──────────────── Naming Convention ────────────────
+   • Foreground colors:  .ttx-colorName  (e.g., .ttx-green, .ttx-magenta)
+   • Background colors:  .ttx-bg-colorName (e.g., .ttx-bg-yellow)
+   • Custom styles must begin with "ttx-" to be recognized by the parser.
+
+   ──────────────── Extending Colors ────────────────
+   You can add your own CSS file (e.g., colors.css) and define any number
+   of new color classes using the same naming convention.
+   Example:
+       .ttx-purple { color: #a020f0; }
+       .ttx-bg-orange { background-color: #ff9900; color: #000; }
+
+   The parser will automatically detect these classes at runtime.
+   No JavaScript modifications are required.
+*/
+
+/* 1. Define all core color variables once */
+:root {
+  --ttx-blue:    #0000ff;
+  --ttx-green:   #00ff00;
+  --ttx-cyan:    #00ffff;
+  --ttx-yellow:  #ffff00;
+  --ttx-red:     #ff0000;
+  --ttx-magenta: #ff00ff;
+  --ttx-white:   #ffffff;
+  --ttx-black:   #000000;
+
+  --ttx-dkblue:    #02006c;
+  --ttx-dkgreen:   #009900;
+  --ttx-dkcyan:    #009999;
+  --ttx-dkyellow:  #999900;
+  --ttx-dkred:     #990000;
+  --ttx-dkmagenta: #990099;
+  --ttx-grey:      #888888;
+
+  --ttx-brblue:    #66ccff;
+  --ttx-brgreen:   #66ff66;
+  --ttx-brcyan:    #99ffff;
+  --ttx-bryellow:  #ffff99;
+  --ttx-brred:     #ff6666;
+  --ttx-brmagenta: #ff66ff;
+  --ttx-brwhite:   #f8f8f8;
+
+  --ttx-orange:  #ff9900;
+  --ttx-brown:   #996633;
+  --ttx-lime:    #99ff33;
+  --ttx-pink:    #ff66cc;
+  --ttx-sky:     #66ccff;
+  --ttx-aqua:    #33cccc;
+  --ttx-gold:    #ffd700;
+  --ttx-silver:  #cccccc;
+  --ttx-rose:    #ff99aa;
+  --ttx-amber:   #ffbf00;
+}
+
+/* 2. Generate text-color classes */
+[class^="ttx-"]:not([class*="bg"]):not(.ttx-btn):not(.ttx-block):not(.ttx-screen) {
+  background: none !important;
+}
+.ttx-blue    { color: var(--ttx-blue); }
+.ttx-green   { color: var(--ttx-green); }
+.ttx-cyan    { color: var(--ttx-cyan); }
+.ttx-yellow  { color: var(--ttx-yellow); }
+.ttx-red     { color: var(--ttx-red); }
+.ttx-magenta { color: var(--ttx-magenta); }
+.ttx-white   { color: var(--ttx-white); }
+.ttx-black   { color: var(--ttx-black); }
+
+.ttx-dkblue    { color: var(--ttx-dkblue); }
+.ttx-dkgreen   { color: var(--ttx-dkgreen); }
+.ttx-dkcyan    { color: var(--ttx-dkcyan); }
+.ttx-dkyellow  { color: var(--ttx-dkyellow); }
+.ttx-dkred     { color: var(--ttx-dkred); }
+.ttx-dkmagenta { color: var(--ttx-dkmagenta); }
+.ttx-grey      { color: var(--ttx-grey); }
+
+.ttx-brblue    { color: var(--ttx-brblue); }
+.ttx-brgreen   { color: var(--ttx-brgreen); }
+.ttx-brcyan    { color: var(--ttx-brcyan); }
+.ttx-bryellow  { color: var(--ttx-bryellow); }
+.ttx-brred     { color: var(--ttx-brred); }
+.ttx-brmagenta { color: var(--ttx-brmagenta); }
+.ttx-brwhite   { color: var(--ttx-brwhite); }
+
+.ttx-orange { color: var(--ttx-orange); }
+.ttx-brown  { color: var(--ttx-brown); }
+.ttx-lime   { color: var(--ttx-lime); }
+.ttx-pink   { color: var(--ttx-pink); }
+.ttx-sky    { color: var(--ttx-sky); }
+.ttx-aqua   { color: var(--ttx-aqua); }
+.ttx-gold   { color: var(--ttx-gold); }
+.ttx-silver { color: var(--ttx-silver); }
+.ttx-rose   { color: var(--ttx-rose); }
+.ttx-amber  { color: var(--ttx-amber); }
+
+/* 3. Generate background-color classes — no automatic text color */
+.ttx-bg-blue    { background-color: var(--ttx-blue); }
+.ttx-bg-green   { background-color: var(--ttx-green); }
+.ttx-bg-cyan    { background-color: var(--ttx-cyan); }
+.ttx-bg-yellow  { background-color: var(--ttx-yellow); }
+.ttx-bg-red     { background-color: var(--ttx-red); }
+.ttx-bg-magenta { background-color: var(--ttx-magenta); }
+.ttx-bg-white   { background-color: var(--ttx-white); }
+.ttx-bg-black   { background-color: var(--ttx-black); }
+
+.ttx-bg-dkblue    { background-color: var(--ttx-dkblue); }
+.ttx-bg-dkgreen   { background-color: var(--ttx-dkgreen); }
+.ttx-bg-dkcyan    { background-color: var(--ttx-dkcyan); }
+.ttx-bg-dkyellow  { background-color: var(--ttx-dkyellow); }
+.ttx-bg-dkred     { background-color: var(--ttx-dkred); }
+.ttx-bg-dkmagenta { background-color: var(--ttx-dkmagenta); }
+.ttx-bg-grey      { background-color: var(--ttx-grey); }
+
+.ttx-bg-brblue    { background-color: var(--ttx-brblue); }
+.ttx-bg-brgreen   { background-color: var(--ttx-brgreen); }
+.ttx-bg-brcyan    { background-color: var(--ttx-brcyan); }
+.ttx-bg-bryellow  { background-color: var(--ttx-bryellow); }
+.ttx-bg-brred     { background-color: var(--ttx-brred); }
+.ttx-bg-brmagenta { background-color: var(--ttx-brmagenta); }
+.ttx-bg-brwhite   { background-color: var(--ttx-brwhite); }
+
+.ttx-bg-orange { background-color: var(--ttx-orange); }
+.ttx-bg-brown  { background-color: var(--ttx-brown); }
+.ttx-bg-lime   { background-color: var(--ttx-lime); }
+.ttx-bg-pink   { background-color: var(--ttx-pink); }
+.ttx-bg-sky    { background-color: var(--ttx-sky); }
+.ttx-bg-aqua   { background-color: var(--ttx-aqua); }
+.ttx-bg-gold   { background-color: var(--ttx-gold); }
+.ttx-bg-silver { background-color: var(--ttx-silver); }
+.ttx-bg-rose   { background-color: var(--ttx-rose); }
+.ttx-bg-amber  { background-color: var(--ttx-amber); }
+
+span[class*="ttx-bg-"] {
+  display: inline-block;
+  line-height: 1.4em;
+  padding: 0.1em 0.25em;
+  border-radius: 0.05em;
+}
+
+.ttx-center {
+  display: inline-block;
+  text-align: center;
+  width: 100%;
+}
+
+.ttx-center > * {
+  display: inline-block;
+  text-align: center;
+}
+
+.ttx-line {
+  display: block;
+  width: 100%;
+  border: none;
+  border-top: var(--ttx-line-thickness, 0.3em) var(--ttx-line-style, solid) var(--ttx-line-color, #fff);
+  margin-top: var(--ttx-line-mt, 0.5em);
+  margin-bottom: var(--ttx-line-mb, 0.5em);
+}
+
+/* Links */
+.page-link {
+  color: #0ff;
+  text-decoration: none;
+}
+.page-link:hover {
+  color: #ff0;
+  text-decoration: underline;
+}
+/* Link underline behavior controlled via JS config */
+.ttx-links-no-underline .page-link {
+  text-decoration: none;
+}
+.ttx-links-underline .page-link {
+  text-decoration: underline;
+}
+
+/* ============================================================
+   BLINK EFFECT (configurable via Teletext.config.blinkRate)
+   ============================================================ */
+
+@keyframes ttx-blink {
+  0%, 49%   { visibility: visible; }
+  50%, 100% { visibility: hidden; }
+}
+
+.ttx-blink {
+  animation-name: ttx-blink;
+  animation-timing-function: steps(1, start);
+  animation-iteration-count: infinite;
+  animation-duration: var(--ttx-blink-rate, 1s);
+}
+
+
+/* ============================================================
+ * Teletext Button Styles (Integrated)
+ * ------------------------------------------------------------
+ * Fully themeable and responsive control panel for Teletext.js
+ * ============================================================ */
+
+/* Main container for buttons */
+.ttx-buttons {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1em;
+  margin-top: 1em;
+  width: 100%;
+  max-width: 250px;
+  margin-inline: auto;
+  user-select: none;
+}
+
+/* Controls and Subcontrols (navigation buttons) */
+.ttx-controls,
+.ttx-subcontrols {
+  display: flex;
+  justify-content: center;
+  gap: 0.6em;
+  width: 100%;
+  min-height: 2.1em;
+}
+
+/* Basic button styling */
+.ttx-controls .ttx-btn,
+.ttx-subcontrols .ttx-btn {
+  flex: 1 1 48%;
+  text-align: center;
+  background: linear-gradient(180deg, #020202 0%, #0a0a0a 60%, #050505 100%);
+  color: #00ff66;
+  border: 2px solid #00ff99;
+  border-radius: 6px;
+  padding: 0.4em 0.6em;
+  font-family: 'European Teletext', monospace;
+  font-size: 0.9em;
+  cursor: pointer;
+  box-shadow:
+    0 0 5px rgba(0, 255, 128, 0.4),
+    inset 0 0 8px rgba(0, 255, 128, 0.1);
+  transition: transform 0.1s ease, background 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* Specific styling for Next and Previous buttons (larger font size) */
+.ttx-controls .ttx-btn.page-navigation-button {
+  font-size: 1.3em; /* Larger font for next/previous buttons */
+}
+
+/* Numeric keypad (number buttons) */
+.ttx-keypad {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.5em;
+  width: 100%;
+  margin-top: 0.8em;
+}
+
+/* Numeric button styling (larger font) */
+.ttx-keypad .ttx-btn.num {
+  font-family: 'European Teletext', monospace;
+  font-size: 2.0em; /* Increased font size */
+  aspect-ratio: 1 / 1;
+  width: 100%;
+  background: linear-gradient(180deg, #050505 0%, #0a0a0a 70%, #020202 100%);
+  color: #00ff88;
+  border: 2px solid #00ff99;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow:
+    0 0 6px rgba(0, 255, 128, 0.5),
+    inset 0 0 8px rgba(0, 255, 128, 0.1);
+  transition: transform 0.1s ease, box-shadow 0.3s ease, background 0.3s ease;
+}
+
+/* Button '0' in the center */
+.ttx-keypad .ttx-btn.num:nth-child(10) {
+  grid-column: 2;
+}
+
+/* Hover effects for control and subcontrol buttons */
+.ttx-controls .ttx-btn:hover,
+.ttx-subcontrols .ttx-btn:hover {
+  background: linear-gradient(180deg, #020202 0%, #0a0a0a 60%, #050505 100%);
+  color: #00ff66;
+  box-shadow:
+    0 0 5px rgba(0, 255, 128, 0.4),
+    inset 0 0 8px rgba(0, 255, 128, 0.1);
+}
+
+/* Active button effects (scale effect) */
+.ttx-btn:active {
+  transform: scale(0.9);
+  background: linear-gradient(180deg, #004400 0%, #001100 100%);
+  box-shadow:
+    0 0 8px rgba(0, 255, 128, 0.6),
+    inset 0 0 10px rgba(0, 255, 128, 0.4);
+}
+
+/* Responsive adjustments for smaller screens */
+@media (max-width: 600px) {
+  .ttx-buttons {
+    max-width: 220px;
+  }
+  .ttx-controls .ttx-btn,
+  .ttx-subcontrols .ttx-btn {
+    font-size: 0.8em;
+    padding: 0.3em 0.5em;
+  }
+  .ttx-keypad {
+    gap: 0.4em;
+  }
+  .ttx-keypad .ttx-btn.num {
+    font-size: 1.7em; /* Adjusted font size for smaller screens */
+  }
+  /* Specific styling for Next and Previous buttons for smaller screens */
+  .ttx-controls .ttx-btn.page-navigation-button {
+    font-size: 1.1em; /* Larger font for next/previous buttons */
+  }
+
+  .ttx-controls,
+  .ttx-subcontrols {
+    min-height: 2.0em;
+  }
+}

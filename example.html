@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Teletext.js Responsive Demo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- Teletext core -->
+  <link rel="stylesheet" href="assets/css/teletext.css">
+  <script src="js/config.js"></script>
+  <script src="js/teletext.js" defer></script>
+
+  <style>
+    /* === Page Layout (Bootstrap-style breakpoints) === */
+    body {
+      background: black;
+      margin: 0;
+      font-family: Arial, sans-serif;
+      color: #ccc;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .container {
+      width: 95%;
+      max-width: 1100px;
+      margin: auto;
+      padding: 1rem;
+      box-sizing: border-box;
+    }
+
+    /* Responsive breakpoints similar to Bootstrap */
+    @media (max-width: 576px)   { .container { max-width: 100%; } }  /* xs */
+    @media (min-width: 577px)  and (max-width: 768px)  { .container { max-width: 540px; } }  /* sm */
+    @media (min-width: 769px)  and (max-width: 992px)  { .container { max-width: 720px; } }  /* md */
+    @media (min-width: 993px)  and (max-width: 1200px) { .container { max-width: 960px; } }  /* lg */
+    @media (min-width: 1201px)                          { .container { max-width: 1100px; } } /* xl */
+
+    .credits {
+      text-align: center;
+      margin-top: 1rem;
+      font-size: 0.85rem;
+      color: #999;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+      <div id="teletext">
+        <!-- Teletext content here -->
+      </div>
+    <!-- Teletext buttons -->
+    <div id="teletext-controls"></div>
+    <div class="credits">
+      <p>Teletext.js Responsive Demo — built by Kasperi Koski</p>
+    </div>
+  </div>
+
+  <script>
+/* ============================================================
+ * Teletext Pages Demo (for Teletext.js v3.1)
+ * ============================================================ */
+
+const pages = {
+
+  /* PAGE 100 -------------------------------------------------- */
+  100: {
+    title: "teletext.js",                  // header title text
+    headerBackground: "blue",              // header background color
+    pageNumberColor: "#fff",               // color of the page number
+    titleColor: "#ff0",                    // color of the title text
+    datetime: {                            // datetime configuration object
+      enabled: true,                       // show datetime area
+      showClock: true,                     // display the clock
+      showDate: false,                     // hide the date
+      showWeekday: false,                  // hide the weekday
+      color: "#0f0",                       // clock text color
+      position: "right"                    // place clock on the right side
+    },
+    content: [
+      // --- Subpage 1 ---
+      `[link]200[/link][h1]teletext.js retro library[/h1]
+This is a playful retro-style teletext prompter that can be deployed directly on a web page. It displays content in a nostalgic way with blocky colors and old-school layout. It supports multiple features such as buttons, subpages, and keyboard navigation.
+
+  You can navigate to the [yellow]next page →[/yellow] or [yellow]previous page ←[/yellow] using arrow keys.
+  Move between subpages with [cyan]↑[/cyan] and [cyan]↓[/cyan].`,
+
+      // --- Subpage 2 ---
+      `[h2]teletext.js Features[/h2]
+    [cyan]•[/cyan] [green]Retro look[/green] — 80s teletext vibe  
+    [cyan]•[/cyan] [magenta]Color blocks[/magenta] — highlight info  
+    [cyan]•[/cyan] [red]Keys[/red] — move pages, subpages  
+    [cyan]•[/cyan] [blue]Custom style[/blue] — edit fonts, colors  
+    [cyan]•[/cyan] [yellow]Fun to use[/yellow] — simple & playful`,
+
+      // --- Subpage 3 ---
+      `[center][block]Blog example[/block][/center]
+  This is a [block-green]blog section[/block-green] where you can post messages or updates.
+  Each entry can use [yellow]color tags[/yellow], [center]centering[/center], and [blink]blinking text[/blink] for emphasis.
+  Try combining different elements to create your own retro-style bulletin!`
+    ]
+  },
+
+  /* PAGE 200 -------------------------------------------------- */
+  200: {
+    title: "Read More",                    // header title text
+    headerBackground: "blue",              // header background color
+    pageNumberColor: "#fff",               // color of the page number
+    titleColor: "#ff0",                    // color of the title text
+    datetime: {                            // datetime configuration object
+      enabled: true,                       // show datetime area
+      showClock: true,                     // display the clock
+      showDate: false,                     // hide the date
+      showWeekday: false,                  // hide the weekday
+      color: "#0f0",                       // clock text color
+      position: "right"                    // place clock on the right side
+    },
+    content: [
+      `[center][h2]Read more here[/h2][/center]
+  This page is still empty — more content coming soon!`
+    ]
+  },
+};
+
+/* ============================================================
+ * Initialize Teletext
+ * ============================================================ */
+window.addEventListener('DOMContentLoaded', () => {
+  Teletext.init(pages, {
+    linkUnderline: false,
+    titleAlign: 'left'
+  });
+});
+
+  </script>
+
+</body>
+</html>
