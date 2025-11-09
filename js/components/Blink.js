@@ -97,10 +97,18 @@ class BlinkElement extends HTMLElement {
       if (value == null) {
         this.style.removeProperty(cssVar);
       } else {
-        // Automatically append "s" to numeric speed values
-        const formattedValue = (key === "speed" && !isNaN(value))
-          ? `${value}s`
-          : value;
+        // Automatically normalize numeric or unitless speed values
+        let formattedValue = value;
+        if (key === "speed" && value != null) {
+          const isNumeric = /^[0-9.]+$/.test(value);
+          const hasUnit = /(ms|s)$/i.test(value);
+          if (isNumeric) {
+            formattedValue = `${value}ms`; // default to milliseconds
+          } else if (!hasUnit) {
+            // fallback for invalid or unitless strings
+            formattedValue = `${value}ms`;
+          }
+        }
         this.style.setProperty(cssVar, String(formattedValue));
       }
     }

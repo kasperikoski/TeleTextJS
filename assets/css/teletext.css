@@ -1,0 +1,853 @@
+/*!
+ * Teletext.css v1.0
+ * Author: Kasperi Koski
+ * License: MIT
+ *
+ * ============================================================
+ *  DESCRIPTION:
+ *  This stylesheet defines the base styling for Teletext.js.
+ *  All styles are scoped under the `.ttx-wrapper` container
+ *  to avoid global overrides.
+ *
+ *  The design emulates classic teletext visuals, using the
+ *  "European Teletext" pixel font and a monospace grid layout.
+ *
+ *  Sections:
+ *  1. Font & Global Rules
+ *  2. Structure (Screen, Content, Footer)
+ *  3. Header Bar (Page number, title, subpage)
+ * ============================================================
+ */
+
+
+/* ============================================================
+   1. FONT & GLOBAL RULES
+   ============================================================ */
+
+@font-face {
+  font-family: "European Teletext";
+  src: url("../fonts/EuropeanTeletext.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "PixelFont";
+  src: url("../fonts/pixel.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+}
+
+/* Teletext core typography — scoped to .ttx-wrapper only */
+.ttx-wrapper,
+#teletext {
+  position: relative;
+  width: 100%;
+  max-width: var(--ttx-max-width, 960px);
+  aspect-ratio: var(--ttx-aspect, 1.3333);
+  background: black;
+  overflow: hidden;
+  font-family: "European Teletext", monospace;
+  color: var(--ttx-base-text-color, #fff);
+  font-size: var(--ttx-base-size, 22px);
+  letter-spacing: 0.05em;
+  border-radius: var(--ttx-screen-radius, 0.2em);
+}
+
+.ttx-wrapper {
+  touch-action: none;
+  overscroll-behavior: contain;
+  position: relative;
+}
+
+.ttx-wrapper * {
+  box-sizing: border-box;
+}
+
+/* Swipe feedback indicator */
+.ttx-swipe-indicator {
+  position: absolute;
+  top: 45%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 2em;
+  color: cyan;
+  text-shadow: 0 0 5px black, 0 0 10px black;
+  pointer-events: none;
+  opacity: 0;
+  animation: ttx-swipe-fade 0.5s ease-out forwards;
+  z-index: 999;
+}
+
+@keyframes ttx-swipe-fade {
+  0% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+  100% { opacity: 0; transform: translate(-50%, -70%) scale(1.2); }
+}
+
+/* ============================================================
+   DYNAMIC FONT SIZE VARIABLES
+   ============================================================ */
+
+.ttx-content {
+  font-size: var(--ttx-content-size, 1em);
+}
+
+/* Dynamic heading levels (scoped only to .ttx-content) */
+.ttx-content h1, .ttx-content .ttx-h1 {
+  font-size: var(--ttx-h1-size, 1.9em);
+  color: var(--ttx-h1-color, yellow);
+}
+
+.ttx-content h2, .ttx-content .ttx-h2 {
+  font-size: var(--ttx-h2-size, 1.7em);
+  color: var(--ttx-h2-color, yellow);
+}
+
+.ttx-content h3, .ttx-content .ttx-h3 {
+  font-size: var(--ttx-h3-size, 1.6em);
+  color: var(--ttx-h3-color, yellow);
+}
+
+.ttx-content h4, .ttx-content .ttx-h4 {
+  font-size: var(--ttx-h4-size, 1.5em);
+  color: var(--ttx-h4-color, yellow);
+}
+
+.ttx-content h5, .ttx-content .ttx-h5 {
+  font-size: var(--ttx-h5-size, 1.4em);
+  color: var(--ttx-h5-color, yellow);
+}
+
+.ttx-content h6, .ttx-content .ttx-h6 {
+  font-size: var(--ttx-h6-size, 1.3em);
+  color: var(--ttx-h6-color, yellow);
+}
+
+/* Remove unwanted spacing between headings and text */
+.ttx-content h1,
+.ttx-content h2,
+.ttx-content h3,
+.ttx-content h4,
+.ttx-content h5,
+.ttx-content h6 {
+  display: inline-block;
+  white-space: pre;
+  line-height: inherit;
+  margin-top: 0.2em;
+  margin-bottom: 0.2em;
+  font-weight: normal !important;
+}
+
+/* ============================================================
+   2. STRUCTURE (Screen, Content, Footer)
+   ============================================================ */
+
+
+@keyframes ttx-tv-flicker {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.98; }
+  75% { opacity: 1.02; }
+}
+/* Scalable Teletext screen inside wrapper */
+.ttx-screen {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: var(--ttx-native-width, 800px);
+  height: var(--ttx-native-height, 600px);
+  transform-origin: top left;
+  transform: scale(var(--ttx-scale, 1));
+  background: radial-gradient(ellipse at top center, rgb(35 35 35), rgba(0, 0, 0, 0.95) 65%);
+  box-shadow:
+    0 0 20px rgba(0,0,0,0.8),
+    inset 0 0 60px rgba(255,255,255,0.03),
+    inset 0 -10px 30px rgba(0,0,0,0.7);
+
+  animation: ttx-tv-flicker var(--ttx-flicker-speed, 4s) infinite ease-in-out;
+}
+
+.ttx-content {
+  flex: 1;
+  padding-left: var(--ttx-content-padding-left, 0.75em);
+  padding-right: var(--ttx-content-padding-right, 0.75em);
+  overflow: hidden;
+  line-height: var(--ttx-content-line-height, 1.2);
+  white-space: pre-wrap;
+}
+
+/* Common footer styles */
+.ttx-footer {
+  font-family: 'European Teletext', monospace; /* Ensuring consistent font */
+  text-align: center;
+  color: var(--ttx-footer-text-color, #ffffff);
+}
+
+/* When footerPosition is inside, apply these styles */
+.ttx-footer.inside {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  font-size: 0.8em; /* Smaller font for inside footer */
+  padding-bottom: 1em;
+}
+
+/* If the footer is outside, retain original behavior */
+.ttx-footer.outside {
+  font-size: 1em; /* Standard size for outside footer */
+  margin-top: 0.8em; /* Adds margin when footer is outside */
+  line-height: 1.3;
+}
+
+/* ============================================================
+   3. TELETYPE HEADER BAR (Page number, title, subpage number)
+   ============================================================ */
+
+/**
+ * The Teletext header bar displays the current page number,
+ * title, and subpage counter. It is fully customizable through
+ * CSS and configuration options defined in Teletext.config.
+ *
+ * Configurable via:
+ * - headerBackground (CSS class name, e.g. "bg-blue", "bg-transparent")
+ * - pageNumberSize, titleSize, subpageNumberSize (font sizes)
+ *
+ * Default layout:
+ * [PAGE NUMBER]    [TITLE]    [SUBPAGE COUNTER]
+ */
+
+.ttx-title {
+  display: flex;
+  justify-content: center;   /* Center horizontally */
+  align-items: center;       /* Center vertically */
+  text-align: center;        /* Center multiline text if any */
+}
+
+.ttx-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.4em 0.7em;
+  color: #0f0;
+  background: var(--ttx-header-bg, #0000ff) !important;
+  margin-top: var(--ttx-header-margin-top, 1em);
+  margin-bottom: var(--ttx-header-margin-bottom, 1em);
+  margin-left: var(--ttx-header-margin-left, 1em);
+  margin-right: var(--ttx-header-margin-right, 1em);
+}
+
+.ttx-header #page-title {
+  color: var(--ttx-title-color, #0ff);
+}
+
+/* === Individual Header Elements === */
+
+#page-number {
+  color: var(--ttx-page-number-color, #fff);
+  font-size: var(--ttx-page-number-size, 1em);
+  font-weight: var(--ttx-page-number-weight, normal);
+}
+
+/* ============================================================
+   HEADER TITLE — ALIGNMENT & MARGIN CONTROL
+   ============================================================
+
+   The title alignment and margins are dynamically adjustable
+   via Teletext.config and runtime CSS variables:
+
+   --ttx-title-align   → text alignment (left, center, right)
+   --ttx-title-ml      → left margin (e.g. 0em, 1em)
+   --ttx-title-mr      → right margin (e.g. 0em, 1em)
+
+   Example overrides (from JS):
+     header.style.setProperty("--ttx-title-align", "left");
+     header.style.setProperty("--ttx-title-ml", "1em");
+     header.style.setProperty("--ttx-title-mr", "0.5em");
+*/
+#page-title {
+  flex: 1;
+  text-align: var(--ttx-title-align, center);
+  margin-left: var(--ttx-title-ml, 0.5em);
+  margin-right: var(--ttx-title-mr, 0.5em);
+  color: #0ff;
+  font-size: var(--ttx-title-size, 1em);
+  font-weight: var(--ttx-title-weight, normal);
+}
+
+#subpage-number {
+  text-align: right;
+  color: var(--ttx-subpage-number-color, #fff);
+  font-size: var(--ttx-subpage-number-size, 1em);
+  font-weight: var(--ttx-subpage-number-weight, normal);
+}
+
+/* ============================================================
+   CLOCK MODULE STYLES
+   ============================================================ */
+.ttx-clock {
+  display: inline-block;
+  padding: 0 0.4em;
+  text-align: center;
+  font-family: "European Teletext", monospace;
+  color: var(--ttx-clock-color, #fff);
+  font-size: var(--ttx-clock-size, 0.9em);
+  font-weight: var(--ttx-clock-weight, normal);
+  line-height: 1.4;
+  margin-left: var(--ttx-clock-ml, 0.5em);
+  margin-right: var(--ttx-clock-mr, 0.5em);
+}
+
+/* --- Ensure no other background properties interfere --- */
+[class*="ttx-bg-"] {
+  background-blend-mode: normal;
+  background-image: none;
+}
+
+/* ============================================================
+   4. HEADER COLOR TRANSPARENCY
+   ============================================================ */
+
+.ttx-header.bg-transparent {
+  background: transparent !important;
+  border: none;
+}
+
+
+/* ============================================================
+   TELETEXT COLOR SYSTEM — BUILT-IN + USER-DEFINED SUPPORT
+   ============================================================
+
+   Color handling in Teletext.js is fully dynamic. Any text wrapped in
+   square brackets (e.g., [yellow]text[/yellow]) will be automatically
+   converted into a <span> element with the corresponding CSS class,
+   if a class matching `.ttx-yellow` exists in any loaded stylesheet.
+
+   ──────────────── Examples ────────────────
+   [red]Alert![/red]     → <span class="ttx-red">Alert!</span>
+
+   ──────────────── Naming Convention ────────────────
+   • Foreground colors:  .ttx-colorName  (e.g., .ttx-green, .ttx-magenta)
+   • Background colors:  .ttx-bg-colorName (e.g., .ttx-bg-yellow)
+   • Custom styles must begin with "ttx-" to be recognized by the parser.
+
+   ──────────────── Extending Colors ────────────────
+   You can add your own CSS file (e.g., colors.css) and define any number
+   of new color classes using the same naming convention.
+   Example:
+       .ttx-purple { color: #a020f0; }
+       .ttx-bg-orange { background-color: #ff9900; color: #000; }
+
+   The parser will automatically detect these classes at runtime.
+   No JavaScript modifications are required.
+*/
+
+/* 1. Define all core color variables once */
+:root {
+  --ttx-blue:    #0000ff;
+  --ttx-green:   #00ff00;
+  --ttx-cyan:    #00ffff;
+  --ttx-yellow:  #ffff00;
+  --ttx-red:     #ff0000;
+  --ttx-magenta: #ff00ff;
+  --ttx-white:   #ffffff;
+  --ttx-black:   #000000;
+
+  --ttx-dkblue:    #02006c;
+  --ttx-dkgreen:   #009900;
+  --ttx-dkcyan:    #009999;
+  --ttx-dkyellow:  #999900;
+  --ttx-dkred:     #990000;
+  --ttx-dkmagenta: #990099;
+  --ttx-grey:      #888888;
+
+  --ttx-brblue:    #66ccff;
+  --ttx-brgreen:   #66ff66;
+  --ttx-brcyan:    #99ffff;
+  --ttx-bryellow:  #ffff99;
+  --ttx-brred:     #ff6666;
+  --ttx-brmagenta: #ff66ff;
+  --ttx-brwhite:   #f8f8f8;
+
+  --ttx-orange:  #ff9900;
+  --ttx-brown:   #996633;
+  --ttx-lime:    #99ff33;
+  --ttx-pink:    #ff66cc;
+  --ttx-sky:     #66ccff;
+  --ttx-aqua:    #33cccc;
+  --ttx-gold:    #ffd700;
+  --ttx-silver:  #cccccc;
+  --ttx-rose:    #ff99aa;
+  --ttx-amber:   #ffbf00;
+}
+
+/* 2. Generate text-color classes */
+.ttx-content span[class^="ttx-"]:not([class*="bg"]) {
+  background: none !important;
+}
+.ttx-blue    { color: var(--ttx-blue); }
+.ttx-green   { color: var(--ttx-green); }
+.ttx-cyan    { color: var(--ttx-cyan); }
+.ttx-yellow  { color: var(--ttx-yellow); }
+.ttx-red     { color: var(--ttx-red); }
+.ttx-magenta { color: var(--ttx-magenta); }
+.ttx-white   { color: var(--ttx-white); }
+.ttx-black   { color: var(--ttx-black); }
+
+.ttx-dkblue    { color: var(--ttx-dkblue); }
+.ttx-dkgreen   { color: var(--ttx-dkgreen); }
+.ttx-dkcyan    { color: var(--ttx-dkcyan); }
+.ttx-dkyellow  { color: var(--ttx-dkyellow); }
+.ttx-dkred     { color: var(--ttx-dkred); }
+.ttx-dkmagenta { color: var(--ttx-dkmagenta); }
+.ttx-grey      { color: var(--ttx-grey); }
+
+.ttx-brblue    { color: var(--ttx-brblue); }
+.ttx-brgreen   { color: var(--ttx-brgreen); }
+.ttx-brcyan    { color: var(--ttx-brcyan); }
+.ttx-bryellow  { color: var(--ttx-bryellow); }
+.ttx-brred     { color: var(--ttx-brred); }
+.ttx-brmagenta { color: var(--ttx-brmagenta); }
+.ttx-brwhite   { color: var(--ttx-brwhite); }
+
+.ttx-orange { color: var(--ttx-orange); }
+.ttx-brown  { color: var(--ttx-brown); }
+.ttx-lime   { color: var(--ttx-lime); }
+.ttx-pink   { color: var(--ttx-pink); }
+.ttx-sky    { color: var(--ttx-sky); }
+.ttx-aqua   { color: var(--ttx-aqua); }
+.ttx-gold   { color: var(--ttx-gold); }
+.ttx-silver { color: var(--ttx-silver); }
+.ttx-rose   { color: var(--ttx-rose); }
+.ttx-amber  { color: var(--ttx-amber); }
+
+span[class*="ttx-bg-"] {
+  display: inline-block;
+  line-height: 1.4em;
+  padding: 0.1em 0.25em;
+  border-radius: 0.05em;
+}
+
+.ttx-center {
+  display: inline-block;
+  text-align: center;
+  width: 100%;
+}
+
+.ttx-center > * {
+  display: inline-block;
+  text-align: center;
+}
+
+.ttx-line {
+  display: block;
+  width: 100%;
+  border: none;
+  border-top: var(--ttx-line-thickness, 0.3em) var(--ttx-line-style, solid) var(--ttx-line-color, #fff);
+  margin-top: var(--ttx-line-mt, 0.5em);
+  margin-bottom: var(--ttx-line-mb, 0.5em);
+}
+
+/* Base Teletext link appearance */
+.ttx-link {
+  color: cyan;
+  text-decoration: none;
+}
+
+/* Optional underline toggle (set by JS config) */
+.ttx-links-underline .ttx-link {
+  text-decoration: underline;
+}
+.ttx-links-no-underline .ttx-link {
+  text-decoration: none;
+}
+
+/* ============================================================
+   BLINK EFFECT (configurable via Teletext.config.blinkRate)
+   ============================================================ */
+
+@keyframes ttx-blink {
+  0%, 49%   { visibility: visible; }
+  50%, 100% { visibility: hidden; }
+}
+
+ttx-blink {
+  display: inline-block !important;
+  white-space: normal !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  border: 0 !important;
+  background: none !important;
+}
+
+
+/* ============================================================
+ * Teletext Button Styles – Retro Minimal Edition
+ * ============================================================ */
+
+.ttx-buttons {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.6em;
+  width: 100%;
+  max-width: 200px; /* smaller overall */
+  margin-inline: auto;
+  user-select: none;
+}
+
+/* Common button base */
+.ttx-btn {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 0.8em;
+  padding: 0.3em 0.8em;
+  border-radius: 6px;
+  border: 1px solid #444;
+  background: #111;
+  color: #f0f0f0;
+  cursor: pointer;
+  transition: background 0.2s ease, box-shadow 0.2s ease, transform 0.1s ease;
+  font-family: "European Teletext", monospace;
+}
+
+/* Hover: subtle darkening */
+.ttx-btn:hover {
+  background: #0d0d0d;
+}
+
+/* Active: light shadow "press" effect */
+.ttx-btn:active {
+  transform: scale(0.95);
+  box-shadow: inset 0 1px 4px rgba(0,0,0,0.5);
+}
+
+/* === Layouts === */
+
+.ttx-controls {
+  margin: var(--ttx-button-container-margin, 0.8em 0 0 0);
+}
+.ttx-controls,
+.ttx-subcontrols {
+  display: flex;
+  justify-content: center;
+  gap: 0.4em;
+  width: 100%;
+}
+
+.ttx-controls .ttx-btn,
+.ttx-subcontrols .ttx-btn {
+  flex: 1 1 48%; /* equal width like before */
+}
+
+/* Numeric keypad (smaller buttons) */
+.ttx-keypad {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.4em;
+  width: 100%;
+  margin-top: 0.6em;
+}
+
+.ttx-keypad .ttx-btn.num {
+  aspect-ratio: 1 / 1;
+  font-size: 1.2em;
+  border-radius: 5px;
+}
+
+/* Center the 0 key */
+.ttx-keypad .ttx-btn.num:nth-child(10) {
+  grid-column: 2;
+}
+
+/* === THEMES === */
+
+/* Dark Theme */
+.ttx-theme-dark .ttx-btn {
+  background: #111;
+  border-color: #333;
+  color: #f8f8f8;
+}
+.ttx-theme-dark .ttx-btn:hover {
+  background: #1a1a1a;
+}
+.ttx-theme-dark .ttx-btn:active {
+  background: #0d0d0d;
+  box-shadow: inset 0 1px 4px rgba(0,0,0,0.6);
+}
+
+/* Light Theme */
+.ttx-theme-light .ttx-btn {
+  background: #eaeaea;
+  border-color: #ccc;
+  color: #111;
+}
+.ttx-theme-light .ttx-btn:hover {
+  background: #ddd;
+}
+.ttx-theme-light .ttx-btn:active {
+  background: #ccc;
+  box-shadow: inset 0 1px 4px rgba(0,0,0,0.3);
+}
+
+/* Responsive tweaks */
+@media (max-width: 600px) {
+  .ttx-buttons {
+    max-width: 160px;
+  }
+  .ttx-btn {
+    font-size: 0.75em;
+    padding: 0.25em 0.6em;
+  }
+  .ttx-keypad .ttx-btn.num {
+    font-size: 1em;
+  }
+}
+
+/* ============================================================
+   TABLES — Optional striped table style (.ttx-striped)
+   ============================================================
+
+   Teletext.js supports optional row striping using the "ttx-striped"
+   class on a <table> element inside .ttx-content.
+
+   ──────────────── Behavior ────────────────
+   • Applies only when <table class="ttx-striped"> is used
+   • Even rows have a solid Teletext-blue background
+   • Odd rows remain transparent
+   • Inherits Teletext color variables for consistent palette
+*/
+
+.ttx-content table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 0.6em 0;
+  font-family: "European Teletext", monospace;
+  font-size: 1em;
+  text-align: left;
+  color: var(--ttx-table-fg, #fff);
+  background: transparent;
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  will-change: transform;
+  image-rendering: crisp-edges;
+}
+
+.ttx-content th,
+.ttx-content td {
+  padding: 0.15em 0.4em;
+  vertical-align: middle;
+  border: none;
+  background-clip: padding-box;
+}
+
+.ttx-content th {
+  color: var(--ttx-table-header-color, #ff0);
+  font-weight: normal;
+  text-transform: uppercase;
+}
+
+/* --- Striped variant (blue background on even rows) --- */
+.ttx-content table.ttx-striped tr:nth-child(even) td {
+  background-color: var(--ttx-blue, #0000ff);
+}
+
+.ttx-content table.ttx-striped tr:nth-child(odd) td {
+  background-color: transparent;
+}
+
+
+/* ============================================================
+   CUSTOM COMPONENTS — DEFAULT FALLBACK VARIABLES
+   ------------------------------------------------------------
+   This section defines default fallback variables for all
+   custom TeletextJS web components. Each component uses its
+   own variable namespace (e.g., --ttx-block-*).
+   These are automatically overridden by config.js values
+   during initialization.
+   ============================================================ */
+
+
+/* ============================================================
+   <ttx-block> — Web Component Styling
+   ------------------------------------------------------------
+   Uses CSS variables for all configurable parameters.
+   The component runs in shadow DOM, but these ensure that
+   global fallbacks exist if shadow root is disabled or fails.
+   ============================================================ */
+
+:root {
+  /* <ttx-block> component defaults */
+  --ttx-block-background: blue;
+  --ttx-block-color: white;
+
+  /* Padding (per side + unified shorthand) */
+  --ttx-block-padding-top: 0.25em;
+  --ttx-block-padding-right: 0.5em;
+  --ttx-block-padding-bottom: 0.25em;
+  --ttx-block-padding-left: 0.5em;
+  --ttx-block-padding: 0.5em; /* fallback shorthand */
+
+  /* Margin (per side + unified shorthand) */
+  --ttx-block-margin-top: 0.25em;
+  --ttx-block-margin-right: 0;
+  --ttx-block-margin-bottom: 0.25em;
+  --ttx-block-margin-left: 0;
+  --ttx-block-margin: 0.25em 0; /* fallback shorthand */
+
+  /* Other visual defaults */
+  --ttx-block-fontSize: 1em;
+  --ttx-block-lineHeight: 1.2;
+  --ttx-block-radius: 0px;
+  --ttx-block-border: none;
+  --ttx-block-shadow: none;
+}
+
+ttx-block {
+  display: block;
+  white-space: normal; /* Prevent inherited pre-wrap spacing */
+  background: var(--ttx-block-background);
+  color: var(--ttx-block-color);
+  font-size: var(--ttx-block-fontSize);
+  line-height: var(--ttx-block-lineHeight);
+  border-radius: var(--ttx-block-radius);
+  border: var(--ttx-block-border);
+  box-shadow: var(--ttx-block-shadow);
+  box-sizing: border-box;
+
+  /* Padding (4-way expansion with fallback) */
+  padding-top: var(--ttx-block-padding-top, var(--ttx-block-padding));
+  padding-right: var(--ttx-block-padding-right, var(--ttx-block-padding));
+  padding-bottom: var(--ttx-block-padding-bottom, var(--ttx-block-padding));
+  padding-left: var(--ttx-block-padding-left, var(--ttx-block-padding));
+
+  /* Margin (4-way expansion with fallback) */
+  margin-top: var(--ttx-block-margin-top, var(--ttx-block-margin));
+  margin-right: var(--ttx-block-margin-right, var(--ttx-block-margin));
+  margin-bottom: var(--ttx-block-margin-bottom, var(--ttx-block-margin));
+  margin-left: var(--ttx-block-margin-left, var(--ttx-block-margin));
+}
+
+/* ============================================================
+   <ttx-mosaic> — Fallback styling (outside shadow DOM)
+   Ensures consistent visuals if shadow root is disabled.
+   ============================================================ */
+
+:root {
+  --ttx-mosaic-background: transparent;
+  --ttx-mosaic-color: inherit;
+  --ttx-mosaic-border: none;
+  --ttx-mosaic-radius: 0;
+  --ttx-mosaic-shadow: none;
+
+  --ttx-mosaic-padding: 0;
+  --ttx-mosaic-padding-top: var(--ttx-mosaic-padding);
+  --ttx-mosaic-padding-right: var(--ttx-mosaic-padding);
+  --ttx-mosaic-padding-bottom: var(--ttx-mosaic-padding);
+  --ttx-mosaic-padding-left: var(--ttx-mosaic-padding);
+
+  --ttx-mosaic-margin: 0;
+  --ttx-mosaic-margin-top: var(--ttx-mosaic-margin);
+  --ttx-mosaic-margin-right: var(--ttx-mosaic-margin);
+  --ttx-mosaic-margin-bottom: var(--ttx-mosaic-margin);
+  --ttx-mosaic-margin-left: var(--ttx-mosaic-margin);
+
+  --ttx-mosaic-gap: 0;
+  --ttx-mosaic-cell-size: auto;
+  --ttx-mosaic-cols: 40;
+  --ttx-mosaic-rows: 20;
+}
+
+ttx-mosaic {
+  display: block;
+  background: var(--ttx-mosaic-background);
+  color: var(--ttx-mosaic-color);
+  border: var(--ttx-mosaic-border);
+  border-radius: var(--ttx-mosaic-radius);
+  box-shadow: var(--ttx-mosaic-shadow);
+  box-sizing: border-box;
+
+  padding-top: var(--ttx-mosaic-padding-top);
+  padding-right: var(--ttx-mosaic-padding-right);
+  padding-bottom: var(--ttx-mosaic-padding-bottom);
+  padding-left: var(--ttx-mosaic-padding-left);
+
+  margin-top: var(--ttx-mosaic-margin-top);
+  margin-right: var(--ttx-mosaic-margin-right);
+  margin-bottom: var(--ttx-mosaic-margin-bottom);
+  margin-left: var(--ttx-mosaic-margin-left);
+  /* Prevents extra whitespace from being rendered before the mosaic grid */
+  font-size: 0;
+}
+
+
+/* ============================================================
+   <ttx-title> — Fallback styling (outside shadow DOM)
+   Ensures consistent appearance and positioning of TeletextJS
+   title elements when the shadow root is disabled or overridden.
+   ============================================================ */
+
+:root {
+  /* Layout and position */
+  --ttx-title-offset: -0.175em;
+  --ttx-title-top: 10%;
+  --ttx-title-left: 50%;
+  --ttx-title-zIndex: 1000;
+  --ttx-title-align: center;
+  --ttx-title-margin: 0;
+  --ttx-title-padding: 0;
+
+  /* Typography */
+  --ttx-title-font: "PixelFont", monospace;
+  --ttx-title-size: 2em;
+  --ttx-title-color: yellow;
+  --ttx-title-weight: bold;
+  --ttx-title-lineHeight: 1;
+  --ttx-title-shadow: none;
+
+  /* Visual effects */
+  --ttx-title-background: transparent;
+  --ttx-title-border: none;
+  --ttx-title-radius: 0;
+}
+
+ttx-title {
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  /* Visual and stacking */
+  z-index: var(--ttx-title-zIndex);
+  pointer-events: none;
+  white-space: nowrap;
+  text-align: var(--ttx-title-align);
+  box-sizing: border-box;
+
+  /* Positioning relative to the Teletext screen */
+  top: var(--ttx-title-top);
+  left: var(--ttx-title-left);
+  transform: translateX(-50%) translateY(var(--ttx-title-offset, 0em));
+
+  /* Typography */
+  font-family: var(--ttx-title-font);
+  font-size: var(--ttx-title-size, 2em);
+  font-weight: var(--ttx-title-weight);
+  line-height: var(--ttx-title-lineHeight);
+  color: var(--ttx-title-color);
+  text-shadow: var(--ttx-title-shadow);
+
+  /* Optional background and border */
+  background: var(--ttx-title-background);
+  border: var(--ttx-title-border);
+  border-radius: var(--ttx-title-radius);
+
+  /* Spacing */
+  margin: var(--ttx-title-margin);
+  padding: var(--ttx-title-padding);
+}
+
+/* Allow normal text wrapping inside slotted content */
+ttx-title * {
+  white-space: normal;
+  margin: 0;
+}

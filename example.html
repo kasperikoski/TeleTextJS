@@ -1,0 +1,801 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Teletext.js Responsive Demo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- Teletext core -->
+  <link rel="stylesheet" href="assets/css/teletext.css">
+  <script src="js/teletext.js" defer></script>
+
+    <style>
+    /* ============================================================
+    * BASE PAGE LAYOUT
+    * ------------------------------------------------------------
+    * Core structure and typography for the main TeletextJS demo.
+    * Defines container sizing and overall visual alignment.
+    * ============================================================ */
+    body {
+      background: white;
+      margin: 0;
+      font-family: Arial, sans-serif;
+      color: #333;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .container {
+      width: 95%;
+      max-width: 1100px;
+      margin: auto;
+      padding: 1rem;
+      box-sizing: border-box;
+    }
+
+    /* ============================================================
+    * TELETEXT LAYOUT
+    * ------------------------------------------------------------
+    * Two-column structure that houses the Teletext screen (main)
+    * and the on-screen remote control (controls).
+    * ============================================================ */
+    .teletext-layout {
+      display: flex;
+      justify-content: center;     /* Center layout horizontally */
+      align-items: flex-start;     /* Align both columns at the top */
+      gap: 2em;                    /* Space between screen and controls */
+      width: 100%;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 1em;
+      box-sizing: border-box;
+    }
+
+    /* ============================================================
+    * COLUMN STRUCTURE
+    * ------------------------------------------------------------
+    * Handles main Teletext display and control column alignment.
+    * ============================================================ */
+    .teletext-col {
+      display: flex;
+      justify-content: center;     /* Center content horizontally */
+      align-items: center;         /* Center content vertically */
+      box-sizing: border-box;
+      width: 100%;
+    }
+
+    .teletext-main {
+      flex: 0 0 66.666%;           /* 8/12 width */
+      display: flex;
+      justify-content: center;
+    }
+
+    .teletext-main > #teletext {
+      flex: 1;
+      max-width: 100%;             /* Prevent overflow within column */
+    }
+
+    .teletext-controls {
+      flex: 0 0 33.333%;           /* 4/12 width */
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+    }
+
+    /* ============================================================
+    * RESPONSIVE BEHAVIOR
+    * ------------------------------------------------------------
+    * Stacks the Teletext screen and control panel vertically
+    * on smaller screens (under 768px width).
+    * ============================================================ */
+    @media (max-width: 768px) {
+      .teletext-layout {
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .teletext-main,
+      .teletext-controls {
+        flex: 0 0 100%;
+        max-width: 100%;
+      }
+
+      .teletext-main > #teletext {
+        width: 100%;
+        max-width: 100%;
+      }
+
+      .teletext-controls {
+        margin-top: 1.2em;
+      }
+    }
+
+    /* ============================================================
+    * CONTAINER BREAKPOINTS
+    * ------------------------------------------------------------
+    * Bootstrap-inspired responsive width scaling for the container.
+    * ============================================================ */
+    @media (max-width: 576px)   { .container { max-width: 100%; } }   /* xs */
+    @media (min-width: 577px)  and (max-width: 768px)  { .container { max-width: 540px; } }   /* sm */
+    @media (min-width: 769px)  and (max-width: 992px)  { .container { max-width: 720px; } }   /* md */
+    @media (min-width: 993px)  and (max-width: 1200px) { .container { max-width: 960px; } }   /* lg */
+    @media (min-width: 1201px)                          { .container { max-width: 1100px; } } /* xl */
+
+    /* ============================================================
+    * DOCUMENTATION SECTION
+    * ------------------------------------------------------------
+    * Styling for embedded documentation and example code snippets.
+    * ============================================================ */
+    .docs {
+      padding: 1rem;
+    }
+
+    .docs h2 {
+      margin-top: 0;
+      color: #222;
+      font-size: 1.3rem;
+    }
+
+    .code-block {
+      background: #2d2d2d;
+      color: #f0f0f0;
+      font-family: Consolas, "Courier New", monospace;
+      padding: 1rem;
+      border-left: 5px solid #4caf50;
+      overflow-x: auto;
+      margin: 1rem 0;
+      line-height: 1.4;
+    }
+
+    .code-block code {
+      background: none;
+      color: inherit;
+      font-family: inherit;
+    }
+
+    .credits {
+      text-align: center;
+      margin-top: 1rem;
+      font-size: 0.85rem;
+      color: #555;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+  <div class="intro">
+    <h1>Welcome to TeletextJS</h1>
+    <p>
+      TeletextJS recreates the nostalgic 1980s teletext experience on the web — 
+      complete with retro visuals, blocky mosaic graphics, and real-time clock display.
+    </p>
+    <p>Features of TeletextJS:</p>
+    <ul>
+      <li>Authentic 1980s-style teletext look and feel</li>
+      <li>Create colorful mosaic art using the <code>&lt;ttx-mosaic&gt;</code> element</li>
+      <li>Supports rich HTML-like syntax for formatting and color tags</li>
+      <li>Built-in clock and datetime display with customizable layout</li>
+      <li>Keyboard navigation and clickable page numbers</li>
+      <li>Multiple subpages per page with fully custom content</li>
+    </ul>
+    <p>
+      Explore the demo using page links below or navigate pages and subpages 
+      with the arrow keys!
+    </p>
+  </div>
+
+  <div class="teletext-layout">
+    <div class="teletext-col teletext-main">
+      <div id="teletext"></div>
+    </div>
+    <div class="teletext-col teletext-controls">
+      <div id="teletext-controls"></div>
+    </div>
+  </div>
+
+  <div class="docs">
+  <h2>Getting Started</h2>
+  <p>
+    To use <strong>TeletextJS</strong>, include the core script inside your 
+    <code>&lt;head&gt;</code> section as follows:
+  </p>
+
+  <div class="code-block">
+    <pre><code>&lt;script src="js/teletext.js" defer&gt;&lt;/script&gt;</code></pre>
+  </div>
+
+  <p>
+    Then initialize TeletextJS at the bottom of your HTML page using this code:
+  </p>
+
+  <div class="code-block">
+    <pre><code>&lt;script&gt;
+window.addEventListener('DOMContentLoaded', () =&gt; {
+  Teletext.init(pages, {
+    // linkUnderline: false,
+    // titleAlign: 'left'
+  });
+});
+&lt;/script&gt;</code></pre>
+  </div>
+
+  <p>
+    You can insert any global configuration options inside the second argument of 
+    <code>Teletext.init()</code>.  
+    These options are <strong>optional</strong> and act as 
+    <em>page-wide global settings</em> for this particular HTML page or app.  
+    Every parameter defined here automatically applies to all Teletext pages and subpages, 
+    unless a specific page overrides them with its own settings.
+  </p>
+
+  <p>
+    This is a reliable and fully supported method — in fact, almost every available setting 
+    (such as colors, text sizes, header styles, buttons, or behavior flags) can be defined 
+    globally in this initialization block.  
+    If you omit a setting, TeletextJS automatically falls back first to the values defined 
+    in your <code>config.js</code> file, and then to the built-in master defaults 
+    in <code>teletext.js</code>.
+  </p>
+
+  <h2>Configuration: <code>config.js</code></h2>
+  <p>
+    All user-editable configuration options are located in 
+    <code>assets/js/config.js</code>.  
+    This file provides a structured way to modify global TeletextJS settings easily 
+    without touching the main library files.
+  </p>
+
+  <p>
+    It includes adjustable parameters for core behavior, layout, color themes, 
+    typography, and visual effects.  
+    For example, you can set the default page number, base font size, 
+    aspect ratio, or header appearance:
+  </p>
+
+  <div class="code-block">
+    <pre><code>window.TeletextConfig = {
+  defaultPage: 100,
+  aspectRatio: 4 / 3,
+  baseSize: 22,
+  headerBackground: "blue",
+  linkUnderline: false,
+  enableKeyboard: true
+};</code></pre>
+  </div>
+
+  <p>
+    These values automatically apply when <code>teletext.js</code> loads, 
+    ensuring consistent behavior across every page that uses the library.  
+    The <code>config.js</code> file is the recommended place for setting up 
+    global site-wide defaults — it keeps the code clean and prevents duplication 
+    between multiple HTML pages.
+  </p>
+
+  <h2>Additional Information & Documentation</h2>
+  <p>
+    Below is a minimal example of defining Teletext pages using JavaScript:
+  </p>
+
+  <div class="code-block">
+    <pre><code>const pages = {
+  100: {
+    title: "Home Page",
+    content: [
+      `[h1]Welcome[/h1]
+      [block-blue]This is a TeletextJS page[/block-blue]`
+    ]
+  }
+};</code></pre>
+  </div>
+
+  <p>
+    You can include mosaics, color blocks, or even raw HTML-like syntax directly 
+    in your page content. TeletextJS automatically parses and renders these elements 
+    with an authentic retro teletext look and feel.
+  </p>
+</div>
+
+  <div class="credits">
+    <p>Teletext.js Responsive Demo — built by Kasperi Koski</p>
+  </div>
+</div>
+
+  
+
+<script>
+/* ============================================================
+ * Teletext Pages Demo
+ * ============================================================ */
+
+const pages = {
+
+/* PAGE 100 -------------------------------------------------- */
+100: {
+  title: "TeletextJS",
+  subpageNumberColor: "#fff",
+  content: [
+    {
+      headerBackground: "transparent",
+      showTitle: false,
+      datetime: {
+        enabled: false
+      },
+      text: `
+TeletextJS on [yellow]hauska[/yellow] JavaScriptilla toimiva teksti-tv -renderöijä,  
+joka näyttää sivusi aivan kuin ne tulisivat suoraan vanhasta [cyan]Teksti-TV:stä[/cyan].
+
+<ttx-block align="center">Navigoi näppäimistöllä tai kosketuseleillä. Myös linkit ovat painettavia! Kokeile niin selviää!</ttx-block>
+  
+  [link]100[/link] Etusivu            [link]302[/link] Ohjaus
+  [link]200[/link] Ominaisuuksia      [link]403[/link] Rajoitukset
+  [link]300[/link] Uutiset            [link]404[/link] Löytöjä
+  [link]400[/link] Joulun sää         [link]500[/link] Fails
+
+
+<ttx-title top="3%" size="4em">TEKSTI-TV</ttx-title>`
+    },
+
+    {
+      datetime: { enabled: true },
+      text: `<h2>Tämä on h2</h2>
+Tämä on sivun [cyan]100[/cyan] alasivu numero #2. Huomaa, että yläpalkin otsikkoteksti on poissa ja tilalla on [magenta]header bar[/magenta], jossa näkyy viikonpäivä ja kello.
+
+<ttx-block background="blue" align="center">Taustavärillinen &lt;ttx-block&gt;, joka tukee attribuutteja kuten &quot;color&quot;, &quot;background&quot; ja &quot;align&quot;.</ttx-block>
+[cyan]Tekstiä voi
+&nbsp;&nbsp;&nbsp;&nbsp;sisentää mielen mukaan
+&nbsp;&nbsp;HTML-entiteetillä &amp;nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&#33;&nbsp;&#34;&nbsp;&#35;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&#164;&nbsp;&#37;&nbsp;&amp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&#47;&nbsp;&euro;&nbsp;&#61;&nbsp;
+[/cyan]
+`
+    }
+  ]
+},
+
+/* PAGE 101 -------------------------------------------------- */
+101: {
+  title: "datetime",
+  headerBackground: "magenta",
+  pageNumberColor: "orange",
+  subpageNumberColor: "yellow",
+  content: [
+    {
+      datetime: {
+        enabled: true,
+        showDate: true,
+        showWeekday: true,
+        locale: "fi-FI",
+        weekdayFormat: "short",
+        color: "yellow",
+      },
+      text: `<h3>datetime</h3>
+Header barissa voidaan näyttää päiväys ja kellonaika monilla eri formaateilla. Tämä on totteutettu näin:
+
+&nbsp;&nbsp;[cyan]headerBackground:[/cyan]&nbsp;[orange]magenta[/orange],
+&nbsp;&nbsp;[cyan]pageNumberColor:[/cyan]&nbsp;[orange]orange[/orange],
+&nbsp;&nbsp;[cyan]subpageNumberColor:[/cyan]&nbsp;[orange]yellow[/orange],
+&nbsp;&nbsp;[cyan]datetime:[/cyan]&nbsp;[magenta]{[/magenta]
+&nbsp;&nbsp;&nbsp;&nbsp;[cyan]enabled:[/cyan]&nbsp;[orange]true[/orange],
+&nbsp;&nbsp;&nbsp;&nbsp;[cyan]showDate:[/cyan]&nbsp;[orange]true[/orange],
+&nbsp;&nbsp;&nbsp;&nbsp;[cyan]showWeekday:[/cyan]&nbsp;[orange]true[/orange],
+&nbsp;&nbsp;&nbsp;&nbsp;[cyan]locale:[/cyan]&nbsp;[orange]"fi-FI"[/orange],
+&nbsp;&nbsp;&nbsp;&nbsp;[cyan]weekdayFormat:[/cyan]&nbsp;[orange]"short"[/orange],
+&nbsp;&nbsp;&nbsp;&nbsp;[cyan]color:[/cyan]&nbsp;[orange]"yellow"[/orange],
+&nbsp;&nbsp;[magenta]}[/magenta]`
+    }
+  ]
+},
+
+/* PAGE 102 -------------------------------------------------- */
+102: {
+  title: "<ttx-blink>",
+  content: [
+    {
+      text: `<h3>&lt;ttx-blink&gt;</h3>
+Tekstin saa vilkkumaan, kun käyttää
+[cyan]&lt;ttx-blink&gt;[/cyan]-elementtiä:
+
+<ttx-blink color="magenta" speed="700ms">&lt;ttx-blink&nbsp;color=&quot;magenta&quot;speed=&quot;700ms&quot;&gt;
+<br>&lt;/ttx-blink&gt;</ttx-blink>`
+    }
+  ]
+},
+
+
+  /* PAGE 200 -------------------------------------------------- */
+  200: {
+    title: "Uutiset",
+    content: [
+    {
+      text: `<ttx-block background="transparent" align="center"><ttx-blink color="yellow">Tämä teksti välkkyy</ttx-blink></ttx-block>
+Tämä teksti taasen ei välky, eikä ole tarkoitustaan. Välkkyminen toteutettiin [cyan]&lt;ttx-block&gt;[/cyan] ja [cyan]&lt;ttx-blink&gt;[/cyan] elementillä. Alla sen sijaan on kehno kopio ja osoitus siitä, mitä [cyan]&lt;ttx-mosaic&gt;[/cyan] voi tehdä.
+
+<ttx-mosaic cols="67" rows="18">
+7777777777777777777777777777777777777777777777777777777777777777777
+7777777777777777000000777777777777777777777770000007777777777777777
+7777777777777700111177007777777777777777777001111770077777777777777
+7777777777777077111177770777777777777777770771111777707777777777777
+7777777777770771111117777077777777777777707711111177770777777777777
+7777777777770711777711777077777777777777707117777117770777777777777
+7777777777701117777771111107777777777777011177777711111077777777777
+7777777777701117777771177107777777777777011177777711771077777777777
+7777777777707117777771777707777777777777071177777717777077777777777
+7777777777707711777711777707777777777777077117777117777077777777777
+7777777777707711111111177107777777777777077111111111771077777777777
+7777777777707770000000011107777777777777077700000000111077777777777
+7777777777770007707707700077777777777777700077077077000777777777777
+7777777777777077707707770777777777777777770777077077707777777777777
+7777777777777077777777770777777777777777770777777777707777777777777
+7777777777777707777777707777777777777777777077777777077777777777777
+7777777777777770000000077777777777777777777700000000777777777777777
+7777777777777777777777777777777777777777777777777777777777777777777
+</ttx-mosaic>`
+    }
+    ]
+  },
+
+/* PAGE 300 -------------------------------------------------- */
+300: {
+  title: "Uutiset",
+  content: [
+    {
+      text: `<h1>Uutiset</h1>
+Tällä sivulla ei ole oikeasti uutisia, vaan ne alkaa vasta seuraavalta sivulta [link]301[/link].
+
+Klikkaa linkkiä ja lue oikeat uutiset!`
+    }
+  ]
+},
+
+/* PAGE 301 -------------------------------------------------- */
+301: {
+  title: "Iloinen uutinen",
+  content: [
+    {
+      text: `<h2>Iloinen koira</h2>
+Koirat tekevät elämämme paremmaksi! Tänään Kalle, iloinen mäyräkoira, voitti paikallisen koirakilpailun. Hän oli niin nopea, että kaikki kilpailijat jäivät taakse. Kallen juoksu oli kuin mestarillinen tanssi, ja jokainen kierros sai yleisön hurraamaan.
+
+Kisan jälkeen Kalle sai ansaitsemansa kultamitalin ja herkullisen palkinnon — kokonaisen grillimakkaran. Kotiin päästyään hän kiipesi sohvalle ja nukahti tyytyväisenä, tassut vieläkin täynnä hiekkaa ja sydän iloa täynnä.`
+    }
+  ]
+},
+
+
+/* PAGE 302 -------------------------------------------------- */
+302: {
+  title: "302",
+  headerBackground: "red",
+  titleColor: "#fff",
+  content: [
+    {
+      datetime: { enabled: false },
+      showTitle: false,
+      text: `
+<ttx-title top="35%" align="center" size="6em" color="yellow"><ttx-blink>302</ttx-blink></ttx-title>
+
+
+
+
+
+
+
+<ttx-block background="transparent" align="center">
+Sivu muutti toiseen taajuuteen. Hauvauutiset jatkuvat seuraavalla sivulla...
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+[link]100[/link] vie taajuuksille...  
+</ttx-block>
+      `
+    }
+  ]
+},
+
+
+/* PAGE 303 -------------------------------------------------- */
+303: {
+  title: "Ilouutinen",
+  content: [
+    {
+      text: `<h2>Susihymy</h2>
+Metsässä asuva susi nimeltä Sisu tunnetaan lempeästä luonteestaan ja terävästä älystään. Viime yönä se nähtiin kuunvalossa ulvomassa niin kauniisti, että jopa pöllöt pysähtyivät kuuntelemaan. Sisu ei ollut surullinen, vaan onnellinen — sillä kevät on tulossa ja metsässä riittää taas ääniä, tuoksuja ja jälkiä seurattavaksi.  
+
+Lähialueen luonnonystävät kertovat, että Sisu on kuin metsän vartija, joka muistuttaa, että villiys ja rauha voivat kulkea tassu käpälässä.`
+    }
+  ]
+},
+
+
+/* PAGE 304 -------------------------------------------------- */
+304: {
+  title: "Uutinen",
+  content: [
+    {
+      text: `<h2>Koira pelasti</h2>
+Tänään rohkea koira nimeltä Max osoitti, mitä todellinen sankaruus tarkoittaa. Kun hänen omistajansa putosi jäiseen lampeen, Max ei epäröinyt hetkeäkään — hän syöksyi veteen ja tarttui takinliepeeseen vetäen ihmisen rantaan. Paikalle saapuneet pelastajat kehuivat koiraa uskomattomaksi ja sanoivat, että ilman häntä olisi tarina voinut päättyä toisin.
+
+Max sai palkinnoksi lämpimän viltin, ison annoksen herkkuja ja tietenkin ikuisen kiitoksen.`
+    }
+  ]
+},
+
+
+/* PAGE 305 -------------------------------------------------- */
+305: {
+  title: "Ilouutinen",
+  content: [
+    {
+      text: `<h2>Koira löysi aarteet</h2>
+Labradorinnoutaja Luna teki uskomattoman löydön metsälenkillä omistajansa kanssa. Hän pysähtyi äkisti, kaivoi kuonollaan sammalta ja alkoi kaivaa tassuillaan kuin hurmiossa. Hetken päästä maasta paljastui vanha metallinen laatikko, joka sisälsi kolikkoja, pieniä hopeakoruja ja kellastuneen kirjeen.
+
+Paikallismuseo otti löydön tutkittavaksi ja vahvisti sen olevan yli sadan vuoden takaa. Luna ei ehkä ymmärtänyt löytönsä arvoa, mutta hänen häntänsä heilui onnesta koko päivän.`
+    }
+  ]
+},
+
+
+/* PAGE 306 -------------------------------------------------- */
+306: {
+  title: "Uutinen",
+  content: [
+    {
+      text: `<h2>Koira juoksi maratonin</h2>
+Nalle, karvainen juoksusankari ja koko kylän ylpeys, osallistui viikonloppuna hyväntekeväisyysmaratoniin. Vaikka matka oli pitkä, Nalle piti vauhtinsa tasaisena ja pysähtyi välillä vain juomaan vettä ja saamaan rapsutuksia yleisöltä.
+
+Kun hän saapui maaliin, ihmiset hurrasivat ja taputtivat seisaaltaan — kukaan ei ollut ennen nähnyt koiraa, joka juoksi hymy huulillaan koko matkan. Illalla Nalle sai palkinnoksi lämpimän peiton, lihapullan ja mitalin, jossa luki: “Paras juoksija ja paras ystävä.”`
+    }
+  ]
+},
+
+/* PAGE 400 -------------------------------------------------- */
+400: {
+  title: "Sää",
+  subpageNumberColor: "#fff",
+  content: [
+    {
+      text: `
+<h3>Suomen sääennuste</h3>
+<table class="ttx-striped">
+  <thead>
+    <tr>
+      <th>Kaupunki</th>
+      <th>Ma</th>
+      <th>Ti</th>
+      <th>Ke</th>
+      <th>To</th>
+      <th>Pe</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr><td>Espoo</td><td>-6°C</td><td>-5°C</td><td>-3°C</td><td>-4°C</td><td>-5°C</td></tr>
+    <tr><td>Hämeenlinna</td><td>-8°C</td><td>-7°C</td><td>-6°C</td><td>-5°C</td><td>-7°C</td></tr>
+    <tr><td>Helsinki</td><td>-4°C</td><td>-3°C</td><td>-2°C</td><td>-3°C</td><td>-4°C</td></tr>
+    <tr><td>Imatra</td><td>-10°C</td><td>-9°C</td><td>-8°C</td><td>-9°C</td><td>-10°C</td></tr>
+    <tr><td>Joensuu</td><td>-14°C</td><td>-13°C</td><td>-11°C</td><td>-12°C</td><td>-13°C</td></tr>
+    <tr><td>Jyväskylä</td><td>-11°C</td><td>-9°C</td><td>-8°C</td><td>-9°C</td><td>-10°C</td></tr>
+    <tr><td>Kajaani</td><td>-16°C</td><td>-14°C</td><td>-13°C</td><td>-12°C</td><td>-14°C</td></tr>
+    <tr><td>Kemi</td><td>-18°C</td><td>-17°C</td><td>-16°C</td><td>-15°C</td><td>-17°C</td></tr>
+    <tr><td>Kokkola</td><td>-12°C</td><td>-11°C</td><td>-9°C</td><td>-10°C</td><td>-11°C</td></tr>
+    <tr><td>Kuopio</td><td>-13°C</td><td>-12°C</td><td>-10°C</td><td>-11°C</td><td>-12°C</td></tr>
+  </tbody>
+</table>`
+    },
+
+    {
+      text: `
+<h3>Suomen sääennuste</h3>
+<table class="ttx-striped">
+  <thead>
+    <tr>
+      <th>Kaupunki</th>
+      <th>Ma</th>
+      <th>Ti</th>
+      <th>Ke</th>
+      <th>To</th>
+      <th>Pe</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr><td>Lahti</td><td>-9°C</td><td>-8°C</td><td>-7°C</td><td>-7°C</td><td>-8°C</td></tr>
+    <tr><td>Lappeenranta</td><td>-11°C</td><td>-10°C</td><td>-9°C</td><td>-10°C</td><td>-11°C</td></tr>
+    <tr><td>Lohja</td><td>-6°C</td><td>-5°C</td><td>-4°C</td><td>-5°C</td><td>-6°C</td></tr>
+    <tr><td>Loviisa</td><td>-7°C</td><td>-6°C</td><td>-5°C</td><td>-5°C</td><td>-6°C</td></tr>
+    <tr><td>Mikkeli</td><td>-12°C</td><td>-11°C</td><td>-9°C</td><td>-10°C</td><td>-11°C</td></tr>
+    <tr><td>Nurmijärvi</td><td>-7°C</td><td>-6°C</td><td>-5°C</td><td>-6°C</td><td>-7°C</td></tr>
+    <tr><td>Oulu</td><td>-17°C</td><td>-16°C</td><td>-14°C</td><td>-15°C</td><td>-16°C</td></tr>
+    <tr><td>Pori</td><td>-8°C</td><td>-7°C</td><td>-6°C</td><td>-7°C</td><td>-8°C</td></tr>
+    <tr><td>Porvoo</td><td>-6°C</td><td>-5°C</td><td>-4°C</td><td>-5°C</td><td>-6°C</td></tr>
+    <tr><td>Raahe</td><td>-15°C</td><td>-14°C</td><td>-13°C</td><td>-12°C</td><td>-14°C</td></tr>
+  </tbody>
+</table>`
+    },
+
+    {
+      text: `
+<h3>Suomen sääennuste</h3>
+<table class="ttx-striped">
+  <thead>
+    <tr>
+      <th>Kaupunki</th>
+      <th>Ma</th>
+      <th>Ti</th>
+      <th>Ke</th>
+      <th>To</th>
+      <th>Pe</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr><td>Rovaniemi</td><td>-22°C</td><td>-21°C</td><td>-19°C</td><td>-20°C</td><td>-21°C</td></tr>
+    <tr><td>Salo</td><td>-7°C</td><td>-6°C</td><td>-5°C</td><td>-5°C</td><td>-6°C</td></tr>
+    <tr><td>Seinäjoki</td><td>-10°C</td><td>-9°C</td><td>-8°C</td><td>-9°C</td><td>-10°C</td></tr>
+    <tr><td>Tampere</td><td>-9°C</td><td>-8°C</td><td>-7°C</td><td>-8°C</td><td>-9°C</td></tr>
+    <tr><td>Turku</td><td>-6°C</td><td>-5°C</td><td>-4°C</td><td>-5°C</td><td>-6°C</td></tr>
+    <tr><td>Vaasa</td><td>-11°C</td><td>-10°C</td><td>-8°C</td><td>-9°C</td><td>-10°C</td></tr>
+    <tr><td>Vantaa</td><td>-5°C</td><td>-4°C</td><td>-3°C</td><td>-4°C</td><td>-5°C</td></tr>
+    <tr><td>Varkaus</td><td>-13°C</td><td>-12°C</td><td>-10°C</td><td>-11°C</td><td>-12°C</td></tr>
+    <tr><td>Viitasaari</td><td>-14°C</td><td>-13°C</td><td>-12°C</td><td>-13°C</td><td>-14°C</td></tr>
+    <tr><td>Ylivieska</td><td>-16°C</td><td>-15°C</td><td>-14°C</td><td>-15°C</td><td>-15°C</td></tr>
+  </tbody>
+</table>`
+    },
+
+    {
+      text: `
+<h3>Suomen sääennuste</h3>
+<table class="ttx-striped">
+  <thead>
+    <tr>
+      <th>Kaupunki</th>
+      <th>Ma</th>
+      <th>Ti</th>
+      <th>Ke</th>
+      <th>To</th>
+      <th>Pe</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr><td>Äänekoski</td><td>-12°C</td><td>-11°C</td><td>-9°C</td><td>-10°C</td><td>-11°C</td></tr>
+    <tr><td>Ähtäri</td><td>-13°C</td><td>-12°C</td><td>-10°C</td><td>-11°C</td><td>-12°C</td></tr>
+    <tr><td>Åbo (Turku)</td><td>-5°C</td><td>-4°C</td><td>-3°C</td><td>-4°C</td><td>-5°C</td></tr>
+    <tr><td>Ämmänsaari</td><td>-18°C</td><td>-17°C</td><td>-16°C</td><td>-17°C</td><td>-18°C</td></tr>
+    <tr><td>Äärelä</td><td>-20°C</td><td>-19°C</td><td>-18°C</td><td>-18°C</td><td>-19°C</td></tr>
+    <tr><td>Äystö</td><td>-14°C</td><td>-13°C</td><td>-12°C</td><td>-13°C</td><td>-14°C</td></tr>
+    <tr><td>Örö</td><td>-4°C</td><td>-4°C</td><td>-3°C</td><td>-4°C</td><td>-4°C</td></tr>
+    <tr><td>Övertorneå</td><td>-21°C</td><td>-20°C</td><td>-19°C</td><td>-19°C</td><td>-20°C</td></tr>
+  </tbody>
+</table>`
+    }
+  ]
+},
+
+  /* PAGE 403 -------------------------------------------------- */
+  403: {
+    title: "403",
+    headerBackground: "red",
+    titleColor: "#fff",
+    content: [
+      {
+        datetime: { enabled: false },
+        showTitle: false,
+        text: `
+  <ttx-title top="35%" align="center" size="6em" color="cyan">403</ttx-title>
+
+
+
+
+
+
+
+<ttx-block background="transparent" align="center">
+Salattu sivu. Tarvitset salasanan... tai taikakaukosäätimen.
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br> 
+[link]100[/link] Takaisin häpeämään
+</ttx-block>
+        `
+      }
+    ]
+  },
+  /* PAGE 404 -------------------------------------------------- */
+  404: {
+    title: "404",
+    headerBackground: "red",
+    titleColor: "#fff",
+    content: [
+      {
+        datetime: { enabled: false },
+        showTitle: false,
+        text: `
+  <ttx-title top="35%" align="center" size="6em" color="green">404</ttx-title>
+
+
+
+
+
+
+
+<ttx-block background="transparent" align="center">
+Tämä komento ei kuulu teksti-tv:n ohjelmistoon.  
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+Kokeile <ttx-blink>[link]100[/link]</ttx-blink> Etusivua.
+</ttx-block>
+        `
+      }
+    ]
+  },
+  /* PAGE 500 -------------------------------------------------- */
+  500: {
+    title: "500",
+    headerBackground: "red",
+    titleColor: "#fff",
+    content: [
+      {
+        datetime: {
+          enabled: true,
+          /** Locale used for date and time formatting */
+          locale: "fi-FI",
+          /** Whether to show current time */
+          showClock: true,
+          /** Whether to show the date */
+          showDate: true,
+          /** Whether to show weekday name */
+          showWeekday: true,
+        },
+        showTitle: false,
+        text: `
+  <ttx-title top="35%" align="center" size="6em" color="yellow">500</ttx-title>
+
+
+
+
+
+
+
+<ttx-block background="transparent" align="center">
+Palvelin teki virheen rivillä 500 ja katosi lumen sekaan.
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+Palaa [link]100[/link] Etusivulle.
+</ttx-block>
+        `
+      }
+    ]
+  },
+}
+
+/* ============================================================
+ * Initialize Teletext
+ * ============================================================ */
+window.addEventListener('DOMContentLoaded', () => {
+  Teletext.init(pages, {
+    linkUnderline: false,
+    titleAlign: 'left',
+    aspectRatio: 4/3,
+  });
+});
+
+  </script>
+
+</body>
+</html>
