@@ -1,6 +1,3 @@
-Selvä — ongelma on siis, että alakohdat tulevat yhdelle riville (kuten kuvassa), eikä Markdown tulkitse niitä oikein rivinvaihtoineen.
-Tässä korjattu versio täysin Markdown-yhteensopivassa muodossa, jossa jokainen kohta ja alakohta on omalla rivillään ja sisennetty oikeaoppisesti:
-
 # Table of Contents
 
 1. **Overview**  
@@ -25,7 +22,7 @@ Tässä korjattu versio täysin Markdown-yhteensopivassa muodossa, jossa jokaine
 4. **Configuration and Override Hierarchy**  
    4.1 [Configuration Priority](#41-configuration-priority)  
    4.2 [How Configuration Is Applied](#42-how-configuration-is-applied)  
-   4.3 [Commonly Used Settings](#43-commonly-used-settings)  
+   4.3 [Commonly Used Settings](#43-commonly-used-settings)
    4.4 [CSS Integration](#44-css-integration)  
    4.5 [Component Defaults](#45-component-defaults)
 
